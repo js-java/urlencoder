@@ -10,14 +10,14 @@
 var i;
 var caseDiff = 'a' - 'A';
 var dontNeedEncoding = [];
-for (i = 'a'; i < 'z'; i++) {
-  dontNeedEncoding.push(i);
+for (i = 97; i <= 122; i++) {
+  dontNeedEncoding.push(String.fromCharCode(i));
 }
-for (i = 'A'; i < 'Z'; i++) {
-  dontNeedEncoding.push(i);
+for (i = 65; i <= 90; i++) {
+  dontNeedEncoding.push(String.fromCharCode(i));
 }
-for (i = '0'; i < '9'; i++) {
-  dontNeedEncoding.push(i);
+for (i = 48; i <= 57; i++) {
+  dontNeedEncoding.push(String.fromCharCode(i));
 }
 dontNeedEncoding.push(' ');
 dontNeedEncoding.push('-');
@@ -25,6 +25,9 @@ dontNeedEncoding.push('_');
 dontNeedEncoding.push('.');
 dontNeedEncoding.push('*');
 
+var Character = require('./character');
+
+exports.dontNeedEncoding = dontNeedEncoding;
 exports.encode = function(s, encoding) {
   encoding = encoding || 'utf8';
 
@@ -56,19 +59,20 @@ exports.encode = function(s, encoding) {
             }
           }
           i++;
-        } while(i < len && !~dontNeedEncoding.indexOf(s[i]));
+          c = s[i];
+        } while(i < len && !~dontNeedEncoding.indexOf(c));
 
         var buf = new Buffer(charArray.join(''), encoding);
         for (var j = 0; j < buf.length; j++) {
           out.push('%');
-          var ch = String.fromCharCode(parseInt((buf[j] >> 4) & 0xF, 16));
-          if (isLetter(ch)) {
-            ch -= caseDiff;
+          var ch = Character.forDigit((buf[j] >> 4) & 0xF, 16);
+          if (Character.isLetter(ch)) {
+            ch = String.fromCharCode(ch.charCodeAt(0) - caseDiff);
           }
           out.push(ch);
-          ch = String.fromCharCode(parseInt(buf[j] & 0xF, 16));
-          if (isLetter(ch)) {
-            ch -= caseDiff;
+          ch = Character.forDigit(buf[j] & 0xF, 16);
+          if (Character.isLetter(ch)) {
+            ch = String.fromCharCode(ch.charCodeAt(0) - caseDiff);
           }
           out.push(ch);
         }
@@ -82,7 +86,3 @@ exports.encode = function(s, encoding) {
 
   return null;
 };
-
-function isLetter(ch) {
-  return /[a-zA-Z]/.test(ch);
-}
