@@ -24,6 +24,7 @@ describe('url encode', function() {
 
   it('should escape non alphanumeric characters', function() {
     var s = '^';
+    console.log(encode(s))
     //assert(encode(s) === encodeURIComponent(s));
   });
 });

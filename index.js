@@ -25,7 +25,7 @@ dontNeedEncoding.push('_');
 dontNeedEncoding.push('.');
 dontNeedEncoding.push('*');
 
-var Character = require('./character');
+var Character = require('./lib/character');
 
 exports.dontNeedEncoding = dontNeedEncoding;
 exports.encode = function(s, encoding) {
