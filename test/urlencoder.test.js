@@ -23,8 +23,12 @@ describe('url encode', function() {
   });
 
   it('should escape non alphanumeric characters', function() {
-    var s = '^';
-    console.log(encode(s))
-    //assert(encode(s) === encodeURIComponent(s));
+    var s = '^@';
+    assert(encode(s) === '%5e%40');
+  });
+
+  it('should escape multi-byte characters', function() {
+    var s = '雪卒';
+    assert(encode(s) === '%e9%9b%aa%e5%8d%92');
   });
 });
